@@ -1,0 +1,41 @@
+name: Shelf Architect Continuous Integration Pipeline
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+jobs:
+  build-and-simulate:
+    name: Execute End-to-End Pipeline Verification
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Source Code Workspace
+      uses: actions/checkout@v3
+
+    - name: Set up Java 11 JDK Architecture
+      uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+        cache: 'maven'
+
+    - name: Set up Python 3.10 Environments
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install PySpark Runtime Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyspark==3.4.1 pandas numpy
+    - name: Compile Code and Package Multi-Tenant JAR
+      run: mvn clean package
+
+    - name: Run Complete Spark Engine Pipeline Simulation
+      run: |
+        java -cp target/shelf-architect-simulation-1.0.0-jar-with-dependencies.jar:$(python -c "import pyspark; print(f'{pyspark.__path__[0]}/jars/*')") \
+          org.apache.spark.launcher.Main \
+          --class com.nielseniq.shelf.MainSimulationRunner \
+          --master "local[*]" \
+          target/shelf-architect-simulation-1.0.0-jar-with-dependencies.jar
