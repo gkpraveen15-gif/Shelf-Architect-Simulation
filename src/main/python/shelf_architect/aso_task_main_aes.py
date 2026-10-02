@@ -21,7 +21,7 @@ def goAmanPullRetailTrendSalesData(spark, config_json, scoped_items, filtered_ma
     # Inner alignment step matching scoped items and active store metrics
     prepared_sales = raw_sales_df.join(scoped_items, "upc_code") \
                                  .join(filtered_markets, "store_id") \
-                                 .select("upc_code", "store_id", "units_sold", "base_price", "CSTM_19501", "CSTM_19621", "execution_id")
+                                 .select("upc_code", "store_id", "units_sold", "base_price", "CSTM_19501", "CSTM_19621", scoped_items["execution_id"])
     
     print(f"[AI EXECUTIVE SUMMARY] Transaction compilation complete. Extracted total data frame footprint of {prepared_sales.count()} operational transaction matrix rows.")
     return prepared_sales

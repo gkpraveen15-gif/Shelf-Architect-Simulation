@@ -33,7 +33,7 @@ class pyMainSimulationBridge(spark: SparkSession, config: RuntimeConfig) {
     
     rawSalesDF.join(scopedItems, "upc_code")
       .join(filteredMarkets, "store_id")
-      .select(rawSalesDF("upc_code"), rawSalesDF("store_id"), col("units_sold"), col("base_price"), col("CSTM_19501"), col("CSTM_19621"), col("execution_id"))
+      .select(rawSalesDF("upc_code"), rawSalesDF("store_id"), col("units_sold"), col("base_price"), col("CSTM_19501"), col("CSTM_19621"), scopedItems("execution_id"))
   }
 
   def call_goAmanPrep_buildUniverse_new_model(preparedSales: DataFrame): DataFrame = {
