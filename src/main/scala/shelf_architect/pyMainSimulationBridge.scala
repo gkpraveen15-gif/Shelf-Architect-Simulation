@@ -62,7 +62,7 @@ class pyMainSimulationBridge(spark: SparkSession, config: RuntimeConfig) {
   }
 
   def call_qmatrix_new_model_part4(coefficientsDF: DataFrame): DataFrame = {
-    coefficientsDF.withColumn("normalized_shelf_share_pct", org.apache.spark.sql.functions.lit(100.0) / col("store_id"))
+    coefficientsDF.withColumn("normalized_shelf_share_pct", org.apache.spark.sql.functions.lit(100.0) / col("projected_fact_revenue"))
   }
 
   def call_build_analytic_results_inputs(qMatrixDF: DataFrame): DataFrame = {
