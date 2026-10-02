@@ -35,6 +35,11 @@ jobs:
     - name: Run Complete Spark Engine Pipeline Simulation
       run: |
         SPARK_HOME=$(python -c "import pyspark; print(pyspark.__path__[0])")
-        $SPARK_HOME/bin/spark-submit --class com.nielseniq.shelf.MainSimulationRunner \
+        $SPARK_HOME/bin/spark-submit \
+          --class com.nielseniq.shelf.MainSimulationRunner \
           --master "local[*]" \
+          --conf spark.driver.host=127.0.0.1 \
+          --conf spark.driver.bindAddress=127.0.0.1 \
+          --conf spark.shuffle.service.enabled=false \
+          --conf spark.sql.shuffle.partitions=1 \
           target/shelf-architect-simulation-1.0.0-jar-with-dependencies.jar
